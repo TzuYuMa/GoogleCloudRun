@@ -25,15 +25,21 @@ def database_to_geojson(table_name):
     )
     # retrieve the data
     with conn.cursor() as cur:
-        query = f"""
-        SELECT JSON_BUILD_OBJECT(
-            'type', 'FeatureCollection',
-            'features', JSON_AGG(
-                ST_AsGeoJson({table_name}.*)::json
+        query =f"""
+            SELECT JSON_BUILD_OBJECT(
+                'type', 'FeatureCollection',
+                'features', JSON_AGG(
+                    ST_AsGeoJson({table_name}.geom)::json
+                ),
+                'crs', JSON_BUILD_OBJECT(
+                    'type', 'name',
+                    'properties', JSON_BUILD_OBJECT(
+                        'name', ST_SRID({table_name}.geom)
+                    )
+                )
             )
-        )
-        FROM {table_name};
-        """
+            FROM {table_name};
+            """
         
         cur.execute(query)
         
