@@ -45,7 +45,7 @@ def database_to_geojson(table_name):
     return data [0][0]
 
 # create the data route
-<<<<<<< HEAD
+
 @app.route('/get_elevation_idw_geojson', methods=['GET'])
 def get_elevation_idw_geojson():
     # call our general function
@@ -69,13 +69,7 @@ def get_temp_asse_geojson():
     # call our general function
     temp_asse = database_to_geojson("diff_idw_pts_temp")
     return temp_asse
-=======
-@app.route('/get_idw_geojson', methods=['GET'])
-def get_idw_geojson():
-    # call our general function
-    idw = database_to_geojson("idw_pts")
-    return idw
->>>>>>> 2ee11834055fcddc0e035b0e79d6934d65b8eded
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
