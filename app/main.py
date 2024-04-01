@@ -31,7 +31,7 @@ def get_idw_geojson():
         SELECT JSON_BUILD_OBJECT(
             'type', 'FeatureCollection',
             'features', JSON_AGG(
-                St_AsGeoJson(idw_pts.*)::json
+                ST_AsGeoJson(idw_pts.*)::json
             )
         )
         FROM idw_pts;
