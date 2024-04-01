@@ -11,12 +11,11 @@ app = Flask(__name__)
 # create the index route
 @app.route('/') 
 def index(): 
-  return "The API is working!"
+    return "The API is working!"
 
-# create the data route
-@app.route('/get_idw_geojson', methods=['GET'])
-def get_idw_geojson():
-    # create connection to the DB
+# create a general DB to GeoJSON function
+def database_to_geojson(table_name):
+        # create connection to the DB
     conn = psycopg2.connect(
         host = os.environ.get("DB_HOST"),
         database = os.environ.get("DB_NAME"),
@@ -24,17 +23,16 @@ def get_idw_geojson():
         password = os.environ.get("DB_PASS"),
         port = os.environ.get("DB_PORT"),
     )
-    
     # retrieve the data
     with conn.cursor() as cur:
-        query = """
+        query = f"""
         SELECT JSON_BUILD_OBJECT(
             'type', 'FeatureCollection',
             'features', JSON_AGG(
-                ST_AsGeoJson(idw_pts.*)::json
+                ST_AsGeoJson({table_name}.*)::json
             )
         )
-        FROM idw_pts;
+        FROM {table_name};
         """
         
         cur.execute(query)
@@ -45,6 +43,13 @@ def get_idw_geojson():
     
     # Returning the data
     return data [0][0]
+
+# create the data route
+@app.route('/get_idw_geojson', methods=['GET'])
+def get_idw_geojson():
+    # call our general function
+    idw = database_to_geojson("idw_pts")
+    return idw
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
