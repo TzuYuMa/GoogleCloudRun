@@ -25,7 +25,7 @@ def database_to_geojson(table_name):
     )
     # retrieve the data
     with conn.cursor() as cur:
-        query = f"""
+        query =f"""
         SELECT JSON_BUILD_OBJECT(
             'type', 'FeatureCollection',
             'features', JSON_AGG(
