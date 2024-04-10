@@ -49,7 +49,7 @@ def database_to_geojson(table_name):
 @app.route('/get_elevation_idw_geojson', methods=['GET'])
 def get_elevation_idw_geojson():
     # call our general function
-    ele_idw = database_to_geojson("idw_pts")
+    ele_idw = database_to_geojson("sampled_idw_pts_ele")
     return ele_idw
 
 @app.route('/get_elevation_assessment_geojson', methods=['GET'])
