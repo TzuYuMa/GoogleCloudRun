@@ -55,7 +55,7 @@ def get_elevation_idw_geojson():
 @app.route('/get_elevation_assessment_geojson', methods=['GET'])
 def get_elevation_assessment_geojson():
     # call our general function
-    ele_assessment = database_to_geojson("diff_pts_idw")
+    ele_assessment = database_to_geojson("sampled_diff_pts_idw")
     return ele_assessment
 
 @app.route('/get_temperature_idw_geojson', methods=['GET'])
