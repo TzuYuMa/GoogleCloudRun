@@ -46,11 +46,11 @@ def database_to_geojson(table_name):
 
 # create the data route
 
-@app.route('/get_elevation_idw_geojson', methods=['GET'])
-def get_elevation_idw_geojson():
+@app.route('/get_agdd_idw', methods=['GET'])
+def get_agdd_idw_geojson():
     # call our general function
-    ele_idw = database_to_geojson("sampled_idw_pts_ele")
-    return ele_idw
+    agdd_idw = database_to_geojson("samp_agdd_idw")
+    return agdd_idw
 
 @app.route('/get_elevation_assessment_geojson', methods=['GET'])
 def get_elevation_assessment_geojson():
