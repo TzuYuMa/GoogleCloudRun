@@ -52,11 +52,11 @@ def get_agdd_idw_geojson():
     agdd_idw = database_to_geojson("samp_agdd_idw")
     return agdd_idw
 
-@app.route('/get_elevation_assessment_geojson', methods=['GET'])
-def get_elevation_assessment_geojson():
+@app.route('/get_soil_moisture', methods=['GET'])
+def get_soil_moisture_geojson():
     # call our general function
-    ele_assessment = database_to_geojson("sampled_diff_pts_idw")
-    return ele_assessment
+    sm = database_to_geojson("samp_soil_moisture")
+    return sm
 
 @app.route('/get_temperature_idw_geojson', methods=['GET'])
 def get_temperature_idw_geojson():
