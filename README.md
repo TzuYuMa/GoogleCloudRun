@@ -1,5 +1,5 @@
 # Developing a Web Map for Minnesota Corn Growers
-![GitHub last commit](https://img.shields.io/github/last-commit/TzuYuMa/Corn?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/TzuYuMa/Corn?style=popout)
 
 ## Overview  
 Our project aims to develop a system that provides Minnesota corn growers with updated information on growing degree days (AGDD), soil moisture, and reference evapotranspiration (ET). Utilizing GeoJSON format from APIs, the data will be visualized through web maps. This supports agricultural decision-making in Minnesota by facilitating the comparison of various models for accurate analysis.
