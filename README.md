@@ -1,6 +1,4 @@
-# Project Title
-
-Minnesota Corn Grower App
+# Minnesota Corn Grower App
 
 ## Data URL
 
