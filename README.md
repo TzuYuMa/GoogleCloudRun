@@ -18,7 +18,7 @@ This app aims to provide Minnesota corn growers with updated information on grow
 ## Data URLs for GeoJson
 - AGDD: [AGDD Data URL](https://googlecloudrun-nvrttyom5q-uc.a.run.app/get_agdd_idw)
 - ET: [ET Data URL]
-- Soil Moisture: [Soil Moisture Data URL]
+- Soil Moisture: [Soil Moisture Data URL](https://googlecloudrun-nvrttyom5q-uc.a.run.app/get_soil_moisture)
 
 ## Contributors 
 - Tzu-Yu Ma  
