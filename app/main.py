@@ -46,29 +46,23 @@ def database_to_geojson(table_name):
 
 # create the data route
 
-@app.route('/get_agdd_idw', methods=['GET'])
+@app.route('/get_agdd_20235_20239', methods=['GET'])
 def get_agdd_idw_geojson():
     # call our general function
     agdd_idw = database_to_geojson("samp_agdd_idw")
     return agdd_idw
 
-@app.route('/get_soil_moisture', methods=['GET'])
+@app.route('/get_soil_moisture_', methods=['GET'])
 def get_soil_moisture_geojson():
     # call our general function
-    sm = database_to_geojson("samp_soil_moisture")
+    sm = database_to_geojson("samp_soil_moisture_")
     return sm
 
-@app.route('/get_temperature_idw_geojson', methods=['GET'])
-def get_temperature_idw_geojson():
-    # call our general function
-    temp_idw = database_to_geojson("sampled_idw_pts_temp")
-    return temp_idw
-
-@app.route('/get_temperature_assessment_geojson', methods=['GET'])
-def get_temp_asse_geojson():
-    # call our general function
-    temp_asse = database_to_geojson("diff_idw_pts_temp")
-    return temp_asse
+@app.route('/get_soil_moisture_<date>', methods=['GET'])
+def get_soil_moisture_geojson(date):
+    # call our general function with the provided date
+    sm = database_to_geojson("samp_soil_moisture_" + date)
+    return sm
 
 
 if __name__ == "__main__":
