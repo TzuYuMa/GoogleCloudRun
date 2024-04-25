@@ -52,11 +52,6 @@ def get_agdd_idw_geojson():
     agdd_idw = database_to_geojson("samp_agdd_idw")
     return agdd_idw
 
-@app.route('/get_soil_moisture_', methods=['GET'])
-def get_soil_moisture_geojson():
-    # call our general function
-    sm = database_to_geojson("samp_soil_moisture_")
-    return sm
 
 @app.route('/get_soil_moisture_<date>', methods=['GET'])
 def get_soil_moisture_geojson(date):
