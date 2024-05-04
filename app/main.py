@@ -90,7 +90,7 @@ def database_to_geojson_by_table_name(table_name):
 
 # create the data route
 # AGDD
-@app.route('/get_agdd_minnesota', methods=['GET'])
+@app.route('/agdd_minnesota', methods=['GET'])
 def get_agdd_minnesota():
     # call our general function
     agdd_minnesota = database_to_geojson_by_table_name("samp_agdd_idw")
@@ -98,7 +98,7 @@ def get_agdd_minnesota():
 
 
 
-@app.route('/get_agdd_<countyname>', methods=['GET'])
+@app.route('/agdd/<countyname>', methods=['GET'])
 def get_agdd_county(countyname):
     sql_query = f"""
         SELECT agdd.*,
@@ -112,14 +112,14 @@ def get_agdd_county(countyname):
     return agdd_county
 
 # Soil 
-@app.route('/get_soil_moisture_<date>', methods=['GET'])
+@app.route('/soil_moisture/<date>', methods=['GET'])
 def get_soil_moisture_geojson(date):
     # call our general function with the provided date
     sm = database_to_geojson_by_table_name("samp_soil_moisture_" + date)
     return sm
 
 
-@app.route('/get_soil_moisture_<date>_<countyname>', methods=['GET'])
+@app.route('/soil_moisture/<date>/<countyname>', methods=['GET'])
 def get_soil_moisture_county(date, countyname):
     # Construct the table name based on the provided date
     sm_county = "samp_soil_moisture_" + date
@@ -140,14 +140,14 @@ def get_soil_moisture_county(date, countyname):
 
 # ET
 
-@app.route('/get_et_<date>', methods=['GET'])
+@app.route('/et/<date>', methods=['GET'])
 def get_et_geojson(date):
     # call our general function with the provided date
     et = database_to_geojson_by_table_name("samp_et_" + date)
     return et
 
 
-@app.route('/get_et_<date>/<countyname>', methods=['GET'])
+@app.route('/et/<date>/<countyname>', methods=['GET'])
 def get_et_county(date, countyname):
     # Construct the table name based on the provided date
     et_county = "samp_et_" + date
