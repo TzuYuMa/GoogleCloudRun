@@ -25,34 +25,25 @@ def database_to_geojson_by_query(sql_query):
     )
     # retrieve the data
     with conn.cursor() as cur:
-        cur.execute(sql_query)
-        # fetchall() will return a list of tuples
+        query =f"""
+        SELECT JSON_BUILD_OBJECT(
+            'type', 'FeatureCollection',
+            'features', JSON_AGG(
+                ST_AsGeoJson(t.*)::json
+            )
+        )
+        FROM ({sql_query}) AS t;
+        """
+        
+        cur.execute(query)
+        
         data = cur.fetchall()
     # close the connection
     conn.close()
+    
+    # Returning the data
+    return data [0][0]
 
-    # Convert query result to GeoJSON format
-    features = []
-    for row in data:
-        # Assuming each row is a GeoJSON feature
-        feature = {
-            "type": "Feature",
-            "properties": {
-                "objectid": row[0],
-                "pointid": row[1],
-                "cumulative_gdd": row[2]
-            },
-            "geometry": row[3]  # Assuming geometry is in the last column
-        }
-        features.append(feature)
-
-    # Creating GeoJSON FeatureCollection
-    geojson_data = {
-        "type": "FeatureCollection",
-        "features": features
-    }
-
-    return geojson_data
 
 
 # create a general DB to GeoJSON function based on a table name
