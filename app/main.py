@@ -71,7 +71,7 @@ def get_agdd_idw_geojson(countyname):
 
     """
 
-    agdd_idw = database_to_geojson_with_sql(sql_query)
+    agdd_idw = database_to_geojson(sql_query)
     return agdd_idw
 
 
