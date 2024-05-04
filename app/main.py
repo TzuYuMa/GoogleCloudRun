@@ -137,12 +137,9 @@ def get_soil_moisture_county(date, countyname):
     sm_county_geojson = database_to_geojson_by_query(sql_query)
     return sm_county_geojson
 
-<<<<<<< HEAD
-=======
 
 # ET
 
->>>>>>> 140f2f9aea7152a85c41899783b156adbc3ce32c
 @app.route('/get_et_<date>', methods=['GET'])
 def get_et_geojson(date):
     # call our general function with the provided date
