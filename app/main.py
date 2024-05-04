@@ -6,14 +6,11 @@ import os
 # create the Flask app
 app = Flask(__name__) 
 
-# Connect to the PostgreSQL database
-
 # create the index route
 @app.route('/') 
 def index(): 
     return "The API is working!"
 
-# create a general DB to GeoJSON function based on a SQL query
 # create a general DB to GeoJSON function based on a SQL query
 def database_to_geojson_by_query(sql_query):
     # create connection to the DB
@@ -119,6 +116,24 @@ def get_agdd_county(countyname):
 
     agdd_county = database_to_geojson_by_query(sql_query)
     return agdd_county
+
+@app.route('/get_soil_moisture_<date>_<countyname>', methods=['GET'])
+def get_soil_moisture_county(date, countyname):
+    # Construct the table name based on the provided date
+    sm_county = "samp_soil_moisture_" + date
+
+    # Construct the SQL query to retrieve soil moisture data for the specified county
+    sql_query = f"""
+        SELECT {sm_county}.*,
+        ST_AsGeoJSON({sm_county}.shape)::json AS geometry
+        FROM {sm_county} 
+        JOIN mn_county_1984 AS county ON ST_Contains(county.shape, {sm_county}.shape)
+        WHERE county.COUNTYNAME = '{countyname}';
+    """
+
+    # Execute the SQL query and return the result as GeoJSON
+    sm_county_geojson = database_to_geojson_by_query(sql_query)
+    return sm_county_geojson
 
 
 if __name__ == "__main__":
