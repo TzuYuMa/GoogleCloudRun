@@ -35,7 +35,16 @@ def database_to_geojson_by_query(sql_query):
     features = []
     for row in data:
         # Assuming each row is a GeoJSON feature
-        features.append(row[0])
+        feature = {
+            "type": "Feature",
+            "properties": {
+                "objectid": row[0],
+                "pointid": row[1],
+                "cumulative_gdd": row[2]
+            },
+            "geometry": row[3]  # Assuming geometry is in the last column
+        }
+        features.append(feature)
 
     # Creating GeoJSON FeatureCollection
     geojson_data = {
@@ -44,6 +53,7 @@ def database_to_geojson_by_query(sql_query):
     }
 
     return geojson_data
+
 
 # create a general DB to GeoJSON function based on a table name
 def database_to_geojson_by_table_name(table_name):
