@@ -6,13 +6,6 @@ import os
 # create the Flask app
 app = Flask(__name__) 
 
-# Connect to the PostgreSQL database
-
-# create the index route
-@app.route('/') 
-def index(): 
-    return "The API is working!"
-
 # create a general DB to GeoJSON function based on a SQL query
 def database_to_geojson_by_query(sql_query):
     # create connection to the DB
@@ -35,6 +28,7 @@ def database_to_geojson_by_query(sql_query):
     features = []
     for row in data:
         # Assuming each row is a GeoJSON feature
+        geometry_geojson = row[3]  # Assuming geometry is in the last column
         feature = {
             "type": "Feature",
             "properties": {
@@ -42,7 +36,7 @@ def database_to_geojson_by_query(sql_query):
                 "pointid": row[1],
                 "cumulative_gdd": row[2]
             },
-            "geometry": row[3]  # Assuming geometry is in the last column
+            "geometry": geometry_geojson
         }
         features.append(feature)
 
@@ -55,64 +49,28 @@ def database_to_geojson_by_query(sql_query):
     return geojson_data
 
 
-# create a general DB to GeoJSON function based on a table name
-def database_to_geojson_by_table_name(table_name):
-        # create connection to the DB
-    conn = psycopg2.connect(
-        host=os.environ.get("DB_HOST"),
-        database=os.environ.get("DB_NAME"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASS"),
-        port=os.environ.get("DB_PORT"),
-    )
-    # retrieve the data
-    with conn.cursor() as cur:
-        query =f"""
-        SELECT JSON_BUILD_OBJECT(
-            'type', 'FeatureCollection',
-            'features', JSON_AGG(
-                ST_AsGeoJson({table_name}.*)::json
-            )
-        )
-        FROM {table_name};
-        """
-        
-        cur.execute(query)
-        
-        data = cur.fetchall()
-    # close the connection
-    conn.close()
-    
-    # Returning the data
-    return data [0][0]
-
+# create the index route
+@app.route('/') 
+def index(): 
+    return "The API is working!"
 
 
 # create the data route
-
-#@app.route('/get_agdd_20235_20239', methods=['GET'])
-#def get_agdd_idw_geojson():
-    # call our general function
-    #agdd_idw = database_to_geojson("samp_agdd_idw")
-    #return agdd_idw
-
-
 @app.route('/get_soil_moisture_<date>', methods=['GET'])
 def get_soil_moisture_geojson(date):
     # call our general function with the provided date
-    sm = database_to_geojson_by_table_name("samp_soil_moisture_" + date)
+    sm = database_to_geojson_by_query(f"SELECT * FROM samp_soil_moisture_{date}")
     return sm
 
 
 @app.route('/get_agdd_<countyname>', methods=['GET'])
 def get_agdd_idw_geojson(countyname):
     sql_query = f"""
-        SELECT agdd.*
+        SELECT agdd.*, ST_AsGeoJSON(agdd.shape)::json
         FROM samp_agdd_idw AS agdd
         JOIN mn_county_1984 AS county 
         ON ST_Contains(county.shape, agdd.shape)
         WHERE county.COUNTYNAME = '{countyname}';
-
     """
 
     agdd_idw = database_to_geojson_by_query(sql_query)
