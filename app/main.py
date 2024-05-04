@@ -97,12 +97,6 @@ def get_agdd_minnesota():
     return agdd_minnesota
 
 
-@app.route('/get_soil_moisture_<date>', methods=['GET'])
-def get_soil_moisture_geojson(date):
-    # call our general function with the provided date
-    sm = database_to_geojson_by_table_name("samp_soil_moisture_" + date)
-    return sm
-
 
 @app.route('/get_agdd_<countyname>', methods=['GET'])
 def get_agdd_county(countyname):
@@ -116,6 +110,14 @@ def get_agdd_county(countyname):
 
     agdd_county = database_to_geojson_by_query(sql_query)
     return agdd_county
+
+
+@app.route('/get_soil_moisture_<date>', methods=['GET'])
+def get_soil_moisture_geojson(date):
+    # call our general function with the provided date
+    sm = database_to_geojson_by_table_name("samp_soil_moisture_" + date)
+    return sm
+
 
 @app.route('/get_soil_moisture_<date>_<countyname>', methods=['GET'])
 def get_soil_moisture_county(date, countyname):
@@ -135,6 +137,32 @@ def get_soil_moisture_county(date, countyname):
     sm_county_geojson = database_to_geojson_by_query(sql_query)
     return sm_county_geojson
 
+
+
+@app.route('/get_et_<date>', methods=['GET'])
+def get_et_geojson(date):
+    # call our general function with the provided date
+    et = database_to_geojson_by_table_name("samp_et_" + date)
+    return et
+
+
+@app.route('/get_et_<date>_<countyname>', methods=['GET'])
+def get_et_county(date, countyname):
+    # Construct the table name based on the provided date
+    et_county = "samp_et_" + date
+
+    # Construct the SQL query to retrieve soil moisture data for the specified county
+    sql_query = f"""
+        SELECT {et_county}.*,
+        ST_AsGeoJSON({et_county}.shape)::json AS geometry
+        FROM {et_county} 
+        JOIN mn_county_1984 AS county ON ST_Contains(county.shape, {et_county}.shape)
+        WHERE county.COUNTYNAME = '{countyname}';
+    """
+
+    # Execute the SQL query and return the result as GeoJSON
+    et_county_geojson = database_to_geojson_by_query(sql_query)
+    return et_county_geojson
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
