@@ -94,10 +94,10 @@ def database_to_geojson_by_table_name(table_name):
 # create the data route
 
 @app.route('/get_agdd_minnesota', methods=['GET'])
-def get_agdd_idw_geojson():
+def get_agdd_minnesota():
     # call our general function
-    agdd_idw = database_to_geojson_by_table_name("samp_agdd_idw")
-    return agdd_idw
+    agdd_minnesota = database_to_geojson_by_table_name("samp_agdd_idw")
+    return agdd_minnesota
 
 
 @app.route('/get_soil_moisture_<date>', methods=['GET'])
@@ -108,22 +108,17 @@ def get_soil_moisture_geojson(date):
 
 
 @app.route('/get_agdd_<countyname>', methods=['GET'])
-def get_agdd_idw_geojson(countyname):
+def get_agdd_county(countyname):
     sql_query = f"""
-        SELECT
-    agdd.*,
-    ST_AsGeoJSON(agdd.shape)::json AS geometry
-FROM
-    samp_agdd_idw AS agdd
-JOIN
-    mn_county_1984 AS county ON ST_Contains(county.shape, agdd.shape)
-WHERE
-    county.COUNTYNAME = '{countyname}';
-
+        SELECT agdd.*,
+        ST_AsGeoJSON(agdd.shape)::json AS geometry
+        FROM samp_agdd_idw AS agdd
+        JOIN mn_county_1984 AS county ON ST_Contains(county.shape, agdd.shape)
+        WHERE county.COUNTYNAME = '{countyname}';
     """
 
-    agdd_idw = database_to_geojson_by_query(sql_query)
-    return agdd_idw
+    agdd_county = database_to_geojson_by_query(sql_query)
+    return agdd_county
 
 
 if __name__ == "__main__":
