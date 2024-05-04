@@ -36,7 +36,7 @@ def database_to_geojson_by_query(sql_query):
     features = []
     for row in data:
         # Assuming each row is a GeoJSON feature
-        geometry_wkb = row[3]  # Assuming geometry is in the last column
+        geometry_wkb = row[4]  # Assuming geometry is in the last column
         feature = {
             "type": "Feature",
             "properties": {
