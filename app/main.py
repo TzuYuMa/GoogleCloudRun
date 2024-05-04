@@ -44,6 +44,39 @@ def database_to_geojson(table_name):
     # Returning the data
     return data [0][0]
 
+# create a general DB to GeoJSON function
+def database_to_geojson(sql_query):
+    # create connection to the DB
+    conn = psycopg2.connect(
+        host=os.environ.get("DB_HOST"),
+        database=os.environ.get("DB_NAME"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASS"),
+        port=os.environ.get("DB_PORT"),
+    )
+    # retrieve the data
+    with conn.cursor() as cur:
+        cur.execute(sql_query)
+        # fetchall() will return a list of tuples
+        data = cur.fetchall()
+    # close the connection
+    conn.close()
+
+    # Convert query result to GeoJSON format
+    features = []
+    for row in data:
+        # Assuming each row is a GeoJSON feature
+        features.append(row[0])
+
+    # Creating GeoJSON FeatureCollection
+    geojson_data = {
+        "type": "FeatureCollection",
+        "features": features
+    }
+
+    return geojson_data
+
+
 # create the data route
 
 #@app.route('/get_agdd_20235_20239', methods=['GET'])
