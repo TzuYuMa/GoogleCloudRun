@@ -59,6 +59,12 @@ def get_soil_moisture_geojson(date):
     sm = database_to_geojson("samp_soil_moisture_" + date)
     return sm
 
+@app.route('/get_agdd_county', methods=['GET'])
+def get_agdd_county_geojson(county):
+    # call our general function
+    agdd_county = database_to_geojson("agdd_" + county)
+    return agdd_county
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
