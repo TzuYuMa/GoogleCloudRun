@@ -35,8 +35,8 @@ def database_to_geojson_by_query(sql_query):
     # Convert query result to GeoJSON format
     features = []
     for row in data:
-        # Assuming each row is a GeoJSON feature
-        geometry_wkb = row[4]  # Assuming geometry is in the last column
+        # each row is a GeoJSON feature
+        geometry_wkb = row[4]  # GeoJSON geometry is in the last column
         feature = {
             "type": "Feature",
             "properties": {
@@ -93,11 +93,11 @@ def database_to_geojson_by_table_name(table_name):
 
 # create the data route
 
-#@app.route('/get_agdd_20235_20239', methods=['GET'])
-#def get_agdd_idw_geojson():
+@app.route('/get_agdd_minnesota', methods=['GET'])
+def get_agdd_idw_geojson():
     # call our general function
-    #agdd_idw = database_to_geojson("samp_agdd_idw")
-    #return agdd_idw
+    agdd_idw = database_to_geojson_by_table_name("samp_agdd_idw")
+    return agdd_idw
 
 
 @app.route('/get_soil_moisture_<date>', methods=['GET'])
