@@ -90,7 +90,7 @@ def database_to_geojson_by_table_name(table_name):
 
 # create the data route
 # AGDD
-@app.route('/agdd_minnesota', methods=['GET'])
+@app.route('/agdd/minnesota', methods=['GET'])
 def get_agdd_minnesota():
     # call our general function
     agdd_minnesota = database_to_geojson_by_table_name("samp_agdd_idw")
