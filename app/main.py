@@ -110,11 +110,16 @@ def get_soil_moisture_geojson(date):
 @app.route('/get_agdd_<countyname>', methods=['GET'])
 def get_agdd_idw_geojson(countyname):
     sql_query = f"""
-        SELECT agdd.*, ST_AsBinary(agdd.shape)
-        FROM samp_agdd_idw AS agdd
-        JOIN mn_county_1984 AS county 
-        ON ST_Contains(county.shape, agdd.shape)
-        WHERE county.COUNTYNAME = '{countyname}';
+        SELECT
+    agdd.*,
+    ST_AsGeoJSON(agdd.shape)::json AS geometry
+FROM
+    samp_agdd_idw AS agdd
+JOIN
+    mn_county_1984 AS county ON ST_Contains(county.shape, agdd.shape)
+WHERE
+    county.COUNTYNAME = '{countyname}';
+
     """
 
     agdd_idw = database_to_geojson_by_query(sql_query)
