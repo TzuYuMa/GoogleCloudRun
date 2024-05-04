@@ -13,39 +13,8 @@ app = Flask(__name__)
 def index(): 
     return "The API is working!"
 
-# create a general DB to GeoJSON function
-def database_to_geojson(table_name):
-        # create connection to the DB
-    conn = psycopg2.connect(
-        host = os.environ.get("DB_HOST"),
-        database = os.environ.get("DB_NAME"),
-        user = os.environ.get("DB_USER"),
-        password = os.environ.get("DB_PASS"),
-        port = os.environ.get("DB_PORT"),
-    )
-    # retrieve the data
-    with conn.cursor() as cur:
-        query =f"""
-        SELECT JSON_BUILD_OBJECT(
-            'type', 'FeatureCollection',
-            'features', JSON_AGG(
-                ST_AsGeoJson({table_name}.*)::json
-            )
-        )
-        FROM {table_name};
-        """
-        
-        cur.execute(query)
-        
-        data = cur.fetchall()
-    # close the connection
-    conn.close()
-    
-    # Returning the data
-    return data [0][0]
-
-# create a general DB to GeoJSON function
-def database_to_geojson(sql_query):
+# create a general DB to GeoJSON function based on a SQL query
+def database_to_geojson_by_query(sql_query):
     # create connection to the DB
     conn = psycopg2.connect(
         host=os.environ.get("DB_HOST"),
@@ -76,6 +45,38 @@ def database_to_geojson(sql_query):
 
     return geojson_data
 
+# create a general DB to GeoJSON function based on a table name
+def database_to_geojson_by_table_name(table_name):
+        # create connection to the DB
+    conn = psycopg2.connect(
+        host=os.environ.get("DB_HOST"),
+        database=os.environ.get("DB_NAME"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASS"),
+        port=os.environ.get("DB_PORT"),
+    )
+    # retrieve the data
+    with conn.cursor() as cur:
+        query =f"""
+        SELECT JSON_BUILD_OBJECT(
+            'type', 'FeatureCollection',
+            'features', JSON_AGG(
+                ST_AsGeoJson({table_name}.*)::json
+            )
+        )
+        FROM {table_name};
+        """
+        
+        cur.execute(query)
+        
+        data = cur.fetchall()
+    # close the connection
+    conn.close()
+    
+    # Returning the data
+    return data [0][0]
+
+
 
 # create the data route
 
@@ -89,7 +90,7 @@ def database_to_geojson(sql_query):
 @app.route('/get_soil_moisture_<date>', methods=['GET'])
 def get_soil_moisture_geojson(date):
     # call our general function with the provided date
-    sm = database_to_geojson("samp_soil_moisture_" + date)
+    sm = database_to_geojson_by_table_name("samp_soil_moisture_" + date)
     return sm
 
 
@@ -104,7 +105,7 @@ def get_agdd_idw_geojson(countyname):
 
     """
 
-    agdd_idw = database_to_geojson(sql_query)
+    agdd_idw = database_to_geojson_by_query(sql_query)
     return agdd_idw
 
 
