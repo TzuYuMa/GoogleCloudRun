@@ -45,6 +45,7 @@ def database_to_geojson_by_query(sql_query):
                 "cumulative_gdd": row[2]
             },
             "geometry": geometry_wkb
+        }
         features.append(feature)
 
     # Creating GeoJSON FeatureCollection
